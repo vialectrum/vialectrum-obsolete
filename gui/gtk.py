@@ -24,18 +24,18 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GObject, cairo
 from decimal import Decimal
-from electrum_ltc.util import print_error
-from electrum_ltc.bitcoin import is_valid
-from electrum_ltc import mnemonic, WalletStorage, Wallet
+from vialectrum.util import print_error
+from vialectrum.bitcoin import is_valid
+from vialectrum import mnemonic, WalletStorage, Wallet
 
 Gdk.threads_init()
-APP_NAME = "Electrum-LTC"
+APP_NAME = "Vialectrum"
 import platform
 MONOSPACE_FONT = 'Lucida Console' if platform.system() == 'Windows' else 'monospace'
 
-from electrum_ltc.util import format_satoshis, parse_URI
-from electrum_ltc.network import DEFAULT_SERVERS
-from electrum_ltc.bitcoin import MIN_RELAY_TX_FEE
+from vialectrum.util import format_satoshis, parse_URI
+from vialectrum.network import DEFAULT_SERVERS
+from vialectrum.bitcoin import MIN_RELAY_TX_FEE
 
 def numbify(entry, is_int = False):
     text = entry.get_text().strip()
@@ -256,7 +256,7 @@ def run_network_dialog( network, parent ):
         host_entry.set_text("Not Connected")
     host_entry.show()
     host_box.pack_start(host_entry, False, False, 10)
-    add_help_button(host_box, 'The name, port number and protocol of your Electrum server, separated by a colon. Example: "ecdsa.org:50002:s". Some servers allow you to connect through http (port 80) or https (port 443)')
+    add_help_button(host_box, 'The name, port number and protocol of your Vialectrum server, separated by a colon. Example: "ecdsa.org:50002:s". Some servers allow you to connect through http (port 80) or https (port 443)')
     host_box.show()
 
     p_box = Gtk.HBox(False, 10)
@@ -451,7 +451,7 @@ GObject.type_register(MyWindow)
 #Gtk.binding_entry_add_signall(MyWindow, Gdk.KEY_Q, Gdk.ModifierType.CONTROL_MASK, 'mykeypress', ['ctrl+Q'])
 
 
-class ElectrumWindow:
+class VialectrumWindow:
 
     def show_message(self, msg):
         show_message(msg, self.window)
@@ -464,7 +464,7 @@ class ElectrumWindow:
         self.num_zeros = int(self.config.get('num_zeros',0))
 
         self.window = MyWindow(Gtk.WindowType.TOPLEVEL)
-        title = 'Electrum-LTC ' + self.wallet.electrum_version + '  -  ' + self.config.path
+        title = 'Vialectrum ' + self.wallet.electrum_version + '  -  ' + self.config.path
         if not self.wallet.seed: title += ' [seedless]'
         self.window.set_title(title)
         self.window.connect("destroy", Gtk.main_quit)
@@ -787,7 +787,7 @@ class ElectrumWindow:
             to_address = r
 
         if not is_valid(to_address):
-            self.show_message( "invalid litecoin address:\n"+to_address)
+            self.show_message( "invalid viacoin address:\n"+to_address)
             return
 
         try:
@@ -1283,7 +1283,7 @@ class ElectrumWindow:
 
     
 
-class ElectrumGui():
+class VialectrumGui():
 
     def __init__(self, config, network):
         self.network = network

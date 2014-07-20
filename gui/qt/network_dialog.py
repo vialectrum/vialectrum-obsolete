@@ -17,13 +17,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import sys, time, datetime, re, threading
-from electrum_ltc.i18n import _
-from electrum_ltc.util import print_error, print_msg
+from vialectrum.i18n import _
+from vialectrum.util import print_error, print_msg
 import os.path, json, ast, traceback
 
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-from electrum_ltc import DEFAULT_SERVERS, DEFAULT_PORTS
+from vialectrum import DEFAULT_SERVERS, DEFAULT_PORTS
 
 from util import *
 

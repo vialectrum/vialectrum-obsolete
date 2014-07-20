@@ -17,8 +17,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import sys, time, datetime, re, threading
-from electrum_ltc.i18n import _, set_language
-from electrum_ltc.util import print_error, print_msg
+from vialectrum.i18n import _, set_language
+from vialectrum.util import print_error, print_msg
 import os.path, json, ast, traceback
 import webbrowser
 import shutil
@@ -30,17 +30,17 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 
-from electrum_ltc.bitcoin import MIN_RELAY_TX_FEE, is_valid
-from electrum_ltc.plugins import run_hook
+from vialectrum.bitcoin import MIN_RELAY_TX_FEE, is_valid
+from vialectrum.plugins import run_hook
 
 import icons_rc
 
-from electrum_ltc.util import format_satoshis
-from electrum_ltc import Transaction
-from electrum_ltc import mnemonic
-from electrum_ltc import util, bitcoin, commands, Interface, Wallet
-from electrum_ltc import SimpleConfig, Wallet, WalletStorage
-from electrum_ltc import Imported_Wallet
+from vialectrum.util import format_satoshis
+from vialectrum import Transaction
+from vialectrum import mnemonic
+from vialectrum import util, bitcoin, commands, Interface, Wallet
+from vialectrum import SimpleConfig, Wallet, WalletStorage
+from vialectrum import Imported_Wallet
 
 from amountedit import AmountEdit, BTCAmountEdit, MyLineEdit
 from network_dialog import NetworkDialog
@@ -72,7 +72,7 @@ PR_PAID    = 3     # send and propagated
 PR_ERROR   = 4     # could not parse
 
 
-from electrum_ltc import ELECTRUM_VERSION
+from vialectrum import ELECTRUM_VERSION
 import re
 
 from util import MyTreeWidget, HelpButton, EnterButton, line_dialog, text_dialog, ok_cancel_buttons, close_button, WaitingDialog
@@ -155,7 +155,7 @@ class ElectrumWindow(QMainWindow):
         if self.config.get("is_maximized"):
             self.showMaximized()
 
-        self.setWindowIcon(QIcon(":icons/electrum-ltc.png"))
+        self.setWindowIcon(QIcon(":icons/vialectrum.png"))
         self.init_menubar()
 
         QShortcut(QKeySequence("Ctrl+W"), self, self.close)
@@ -202,7 +202,7 @@ class ElectrumWindow(QMainWindow):
 
 
     def load_wallet(self, wallet):
-        import electrum_ltc as electrum
+        import vialectrum as electrum
 
         self.wallet = wallet
         self.update_wallet_format()
@@ -210,7 +210,7 @@ class ElectrumWindow(QMainWindow):
         self.invoices = self.wallet.storage.get('invoices', {})
         self.accounts_expanded = self.wallet.storage.get('accounts_expanded',{})
         self.current_account = self.wallet.storage.get("current_account", None)
-        title = 'Electrum-LTC ' + self.wallet.electrum_version + '  -  ' + self.wallet.storage.path
+        title = 'Vialectrum ' + self.wallet.electrum_version + '  -  ' + self.wallet.storage.path
         if self.wallet.is_watching_only(): title += ' [%s]' % (_('watching only'))
         self.setWindowTitle( title )
         self.update_wallet()
@@ -279,7 +279,7 @@ class ElectrumWindow(QMainWindow):
                 shutil.copy2(path, new_path)
                 QMessageBox.information(None,"Wallet backup created", _("A copy of your wallet file was created in")+" '%s'" % str(new_path))
             except (IOError, os.error), reason:
-                QMessageBox.critical(None,"Unable to create backup", _("Electrum was unable to copy your wallet file to the specified location.")+"\n" + str(reason))
+                QMessageBox.critical(None,"Unable to create backup", _("Vialectrum was unable to copy your wallet file to the specified location.")+"\n" + str(reason))
 
 
     def new_wallet(self):
@@ -344,7 +344,7 @@ class ElectrumWindow(QMainWindow):
         tools_menu = menubar.addMenu(_("&Tools"))
 
         # Settings / Preferences are all reserved keywords in OSX using this as work around
-        tools_menu.addAction(_("Electrum preferences") if sys.platform == 'darwin' else _("Preferences"), self.settings_dialog)
+        tools_menu.addAction(_("Vialectrum preferences") if sys.platform == 'darwin' else _("Preferences"), self.settings_dialog)
         tools_menu.addAction(_("&Network"), self.run_network_dialog)
         tools_menu.addAction(_("&Plugins"), self.plugins_dialog)
         tools_menu.addSeparator()
@@ -365,20 +365,20 @@ class ElectrumWindow(QMainWindow):
 
         help_menu = menubar.addMenu(_("&Help"))
         help_menu.addAction(_("&About"), self.show_about)
-        help_menu.addAction(_("&Official website"), lambda: webbrowser.open("http://electrum-ltc.org"))
+        help_menu.addAction(_("&Official website"), lambda: webbrowser.open("http://vialectrum.org"))
         help_menu.addSeparator()
-        help_menu.addAction(_("&Documentation"), lambda: webbrowser.open("http://electrum-ltc.org/documentation.html")).setShortcut(QKeySequence.HelpContents)
+        help_menu.addAction(_("&Documentation"), lambda: webbrowser.open("http://vialectrum.org/documentation.html")).setShortcut(QKeySequence.HelpContents)
         help_menu.addAction(_("&Report Bug"), self.show_report_bug)
 
         self.setMenuBar(menubar)
 
     def show_about(self):
-        QMessageBox.about(self, "Electrum-LTC",
-            _("Version")+" %s" % (self.wallet.electrum_version) + "\n\n" + _("Electrum's focus is speed, with low resource usage and simplifying Litecoin. You do not need to perform regular backups, because your wallet can be recovered from a secret phrase that you can memorize or write on paper. Startup times are instant because it operates in conjunction with high-performance servers that handle the most complicated parts of the Litecoin system."))
+        QMessageBox.about(self, "Vialectrum",
+            _("Version")+" %s" % (self.wallet.electrum_version) + "\n\n" + _("Vialectrum's focus is speed, with low resource usage and simplifying Viacoin. You do not need to perform regular backups, because your wallet can be recovered from a secret phrase that you can memorize or write on paper. Startup times are instant because it operates in conjunction with high-performance servers that handle the most complicated parts of the Viacoin system."))
 
     def show_report_bug(self):
-        QMessageBox.information(self, "Electrum-LTC - " + _("Reporting Bugs"),
-            _("Please report any bugs as issues on github:")+" <a href=\"https://github.com/pooler/electrum-ltc/issues\">https://github.com/pooler/electrum-ltc/issues</a>")
+        QMessageBox.information(self, "Vialectrum - " + _("Reporting Bugs"),
+            _("Please report any bugs as issues on github:")+" <a href=\"https://github.com/pooler/vialectrum/issues\">https://github.com/pooler/vialectrum/issues</a>")
 
 
     def notify_transactions(self):
@@ -409,7 +409,7 @@ class ElectrumWindow(QMainWindow):
                           self.notify(_("New transaction received. %(amount)s %(unit)s") % { 'amount' : self.format_amount(v), 'unit' : self.base_unit()})
 
     def notify(self, message):
-        self.tray.showMessage("Electrum-LTC", message, QSystemTrayIcon.Information, 20000)
+        self.tray.showMessage("Vialectrum", message, QSystemTrayIcon.Information, 20000)
 
 
 
@@ -457,9 +457,9 @@ class ElectrumWindow(QMainWindow):
         if self.decimal_point == 2:
             return 'bits'
         if self.decimal_point == 5:
-            return 'mLTC'
+            return 'mVIA'
         if self.decimal_point == 8:
-            return 'LTC'
+            return 'VIA'
         raise Exception('Unknown base unit')
 
     def update_status(self):
@@ -522,13 +522,11 @@ class ElectrumWindow(QMainWindow):
     def create_history_menu(self, position):
         self.history_list.selectedIndexes()
         item = self.history_list.currentItem()
-        be = self.config.get('block_explorer', 'explorer.litecoin.net')
-        if be == 'explorer.litecoin.net':
-            block_explorer = 'http://explorer.litecoin.net/tx/'
-        elif be == 'block-explorer.com':
-            block_explorer = 'http://block-explorer.com/tx/'
-        elif be == 'Blockr.io':
-            block_explorer = 'https://ltc.blockr.io/tx/info/'
+        be = self.config.get('block_explorer', 'explorer.viacoin.org')
+        if be == 'explorer.viacoin.org':
+            block_explorer = 'http://explorer.viacoin.org/tx/'
+        elif be == 'viacoinexplorer.com':
+            block_explorer = 'http://viacoinexplorer.com/tx/'
         if not item: return
         tx_hash = str(item.data(0, Qt.UserRole).toString())
         if not tx_hash: return
@@ -814,7 +812,7 @@ class ElectrumWindow(QMainWindow):
                 query.append('amount=%s'%format_satoshis(amount))
             if message:
                 query.append('message=%s'%urllib.quote(message))
-            p = urlparse.ParseResult(scheme='litecoin', netloc='', path=addr, params='', query='&'.join(query), fragment='')
+            p = urlparse.ParseResult(scheme='viacoin', netloc='', path=addr, params='', query='&'.join(query), fragment='')
             url = urlparse.urlunparse(p)
         else:
             url = ""
@@ -834,7 +832,7 @@ class ElectrumWindow(QMainWindow):
         from paytoedit import PayToEdit
         self.amount_e = BTCAmountEdit(self.get_decimal_point)
         self.payto_e = PayToEdit(self)
-        self.payto_help = HelpButton(_('Recipient of the funds.') + '\n\n' + _('You may enter a Litecoin address, a label from your list of contacts (a list of completions will be proposed), or an alias (email-like address that forwards to a Litecoin address)'))
+        self.payto_help = HelpButton(_('Recipient of the funds.') + '\n\n' + _('You may enter a Viacoin address, a label from your list of contacts (a list of completions will be proposed), or an alias (email-like address that forwards to a Viacoin address)'))
         grid.addWidget(QLabel(_('Pay to')), 1, 0)
         grid.addWidget(self.payto_e, 1, 1, 1, 3)
         grid.addWidget(self.payto_help, 1, 4)
@@ -874,7 +872,7 @@ class ElectrumWindow(QMainWindow):
         grid.addWidget(QLabel(_('Fee')), 5, 0)
         grid.addWidget(self.fee_e, 5, 1, 1, 2)
         grid.addWidget(HelpButton(
-                _('Litecoin transactions are in general not free. A transaction fee is paid by the sender of the funds.') + '\n\n'\
+                _('Viacoin transactions are in general not free. A transaction fee is paid by the sender of the funds.') + '\n\n'\
                     + _('The amount of fee can be decided freely by the sender. However, transactions with low fees take more time to be processed.') + '\n\n'\
                     + _('A suggested fee is automatically added to this field. You may override it. The suggested fee increases with the size of the transaction.')), 5, 3)
 
@@ -1002,12 +1000,12 @@ class ElectrumWindow(QMainWindow):
 
         for type, addr, amount in outputs:
             if addr is None:
-                QMessageBox.warning(self, _('Error'), _('Litecoin Address is None'), _('OK'))
+                QMessageBox.warning(self, _('Error'), _('Viacoin Address is None'), _('OK'))
                 return
             if type == 'op_return':
                 continue
             if type == 'address' and not bitcoin.is_address(addr):
-                QMessageBox.warning(self, _('Error'), _('Invalid Litecoin Address'), _('OK'))
+                QMessageBox.warning(self, _('Error'), _('Invalid Viacoin Address'), _('OK'))
                 return
             if amount is None:
                 QMessageBox.warning(self, _('Error'), _('Invalid Amount'), _('OK'))
@@ -1189,7 +1187,7 @@ class ElectrumWindow(QMainWindow):
         try:
             address, amount, label, message, request_url = util.parse_URI(URI)
         except Exception as e:
-            QMessageBox.warning(self, _('Error'), _('Invalid litecoin URI:') + '\n' + str(e), _('OK'))
+            QMessageBox.warning(self, _('Error'), _('Invalid viacoin URI:') + '\n' + str(e), _('OK'))
             return
 
         self.tabs.setCurrentIndex(1)
@@ -1211,7 +1209,7 @@ class ElectrumWindow(QMainWindow):
                 self.amount_e.setAmount(amount)
             return
 
-        from electrum_ltc import paymentrequest
+        from vialectrum import paymentrequest
         def payment_request():
             self.payment_request = paymentrequest.PaymentRequest(self.config)
             self.payment_request.read(request_url)
@@ -1475,7 +1473,7 @@ class ElectrumWindow(QMainWindow):
             payto_addr = item.data(0,33).toString()
             menu.addAction(_("Copy to Clipboard"), lambda: self.app.clipboard().setText(addr))
             menu.addAction(_("Pay to"), lambda: self.payto(payto_addr))
-            menu.addAction(_("QR code"), lambda: self.show_qrcode("litecoin:" + addr, _("Address")))
+            menu.addAction(_("QR code"), lambda: self.show_qrcode("viacoin:" + addr, _("Address")))
             if is_editable:
                 menu.addAction(_("Edit label"), lambda: self.edit_label(False))
                 menu.addAction(_("Delete"), lambda: self.delete_contact(addr))
@@ -1489,7 +1487,7 @@ class ElectrumWindow(QMainWindow):
         self.update_invoices_tab()
 
     def show_invoice(self, key):
-        from electrum_ltc.paymentrequest import PaymentRequest
+        from vialectrum.paymentrequest import PaymentRequest
         domain, memo, value, expiration, status, tx_hash = self.invoices[key]
         pr = PaymentRequest(self.config)
         pr.read_file(key)
@@ -1508,7 +1506,7 @@ class ElectrumWindow(QMainWindow):
         QMessageBox.information(self, 'Invoice', msg , 'OK')
 
     def do_pay_invoice(self, key):
-        from electrum_ltc.paymentrequest import PaymentRequest
+        from vialectrum.paymentrequest import PaymentRequest
         domain, memo, value, expiration, status, tx_hash = self.invoices[key]
         pr = PaymentRequest(self.config)
         pr.read_file(key)
@@ -1769,7 +1767,7 @@ class ElectrumWindow(QMainWindow):
         vbox.addWidget(QLabel(_('Account name')+':'))
         e = QLineEdit()
         vbox.addWidget(e)
-        msg = _("Note: Newly created accounts are 'pending' until they receive litecoins.") + " " \
+        msg = _("Note: Newly created accounts are 'pending' until they receive viacoins.") + " " \
             + _("You will need to wait for 2 confirmations until the correct balance is displayed and more addresses are created for that account.")
         l = QLabel(msg)
         l.setWordWrap(True)
@@ -2076,7 +2074,7 @@ class ElectrumWindow(QMainWindow):
                 return Transaction.deserialize(txt)
             except:
                 traceback.print_exc(file=sys.stdout)
-                QMessageBox.critical(None, _("Unable to parse transaction"), _("Electrum was unable to parse your transaction"))
+                QMessageBox.critical(None, _("Unable to parse transaction"), _("Vialectrum was unable to parse your transaction"))
                 return
 
         try:
@@ -2089,7 +2087,7 @@ class ElectrumWindow(QMainWindow):
             return tx
         except Exception:
             traceback.print_exc(file=sys.stdout)
-            QMessageBox.critical(None, _("Unable to parse transaction"), _("Electrum was unable to parse your transaction"))
+            QMessageBox.critical(None, _("Unable to parse transaction"), _("Vialectrum was unable to parse your transaction"))
 
 
     def read_tx_from_qrcode(self):
@@ -2116,7 +2114,7 @@ class ElectrumWindow(QMainWindow):
             with open(fileName, "r") as f:
                 file_content = f.read()
         except (ValueError, IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum was unable to open your transaction file") + "\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Vialectrum was unable to open your transaction file") + "\n" + str(reason))
 
         return self.tx_from_text(file_content)
 
@@ -2143,7 +2141,7 @@ class ElectrumWindow(QMainWindow):
             self.show_transaction(tx)
 
     def do_process_from_txid(self):
-        from electrum_ltc import transaction
+        from vialectrum import transaction
         txid, ok = QInputDialog.getText(self, _('Lookup transaction'), _('Transaction ID') + ':')
         if ok and txid:
             r = self.network.synchronous_get([ ('blockchain.transaction.get',[str(txid)]) ])[0]
@@ -2168,7 +2166,7 @@ class ElectrumWindow(QMainWindow):
                 amount = int(100000000*amount)
                 outputs.append(('address', address, amount))
         except (ValueError, IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum was unable to open your transaction file") + "\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Vialectrum was unable to open your transaction file") + "\n" + str(reason))
             return
         if errors != []:
             for x in errors:
@@ -2193,7 +2191,7 @@ class ElectrumWindow(QMainWindow):
                 csvReader = csv.reader(f)
                 self.do_process_from_csvReader(csvReader)
         except (ValueError, IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Electrum was unable to open your transaction file") + "\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to read file or no transaction found"), _("Vialectrum was unable to open your transaction file") + "\n" + str(reason))
             return
 
     def do_process_from_csv_text(self):
@@ -2227,7 +2225,7 @@ class ElectrumWindow(QMainWindow):
         e.setReadOnly(True)
         vbox.addWidget(e)
 
-        defaultname = 'electrum-ltc-private-keys.csv'
+        defaultname = 'vialectrum-private-keys.csv'
         select_msg = _('Select file to export your private keys to')
         hbox, filename_e, csv_button = filename_field(self, self.config, defaultname, select_msg)
         vbox.addLayout(hbox)
@@ -2268,7 +2266,7 @@ class ElectrumWindow(QMainWindow):
         try:
             self.do_export_privkeys(filename, private_keys, csv_button.isChecked())
         except (IOError, os.error), reason:
-            export_error_label = _("Electrum was unable to produce a private key-export.")
+            export_error_label = _("Vialectrum was unable to produce a private key-export.")
             QMessageBox.critical(None, _("Unable to create csv"), export_error_label + "\n" + str(reason))
 
         except Exception as e:
@@ -2301,19 +2299,19 @@ class ElectrumWindow(QMainWindow):
                 self.wallet.set_label(key, value)
             QMessageBox.information(None, _("Labels imported"), _("Your labels were imported from")+" '%s'" % str(labelsFile))
         except (IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to import labels"), _("Electrum was unable to import your labels.")+"\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to import labels"), _("Vialectrum was unable to import your labels.")+"\n" + str(reason))
 
 
     def do_export_labels(self):
         labels = self.wallet.labels
         try:
-            fileName = self.getSaveFileName(_("Select file to save your labels"), 'electrum-ltc_labels.dat', "*.dat")
+            fileName = self.getSaveFileName(_("Select file to save your labels"), 'vialectrum_labels.dat', "*.dat")
             if fileName:
                 with open(fileName, 'w+') as f:
                     json.dump(labels, f)
                 QMessageBox.information(None, _("Labels exported"), _("Your labels where exported to")+" '%s'" % str(fileName))
         except (IOError, os.error), reason:
-            QMessageBox.critical(None, _("Unable to export labels"), _("Electrum was unable to export your labels.")+"\n" + str(reason))
+            QMessageBox.critical(None, _("Unable to export labels"), _("Vialectrum was unable to export your labels.")+"\n" + str(reason))
 
 
     def export_history_dialog(self):
@@ -2323,7 +2321,7 @@ class ElectrumWindow(QMainWindow):
         d.setMinimumSize(400, 200)
         vbox = QVBoxLayout(d)
 
-        defaultname = os.path.expanduser('~/electrum-ltc-history.csv')
+        defaultname = os.path.expanduser('~/vialectrum-history.csv')
         select_msg = _('Select file to export your wallet transactions to')
 
         hbox, filename_e, csv_button = filename_field(self, self.config, defaultname, select_msg)
@@ -2343,7 +2341,7 @@ class ElectrumWindow(QMainWindow):
         try:
             self.do_export_history(self.wallet, filename, csv_button.isChecked())
         except (IOError, os.error), reason:
-            export_error_label = _("Electrum was unable to produce a transaction export.")
+            export_error_label = _("Vialectrum was unable to produce a transaction export.")
             QMessageBox.critical(self, _("Unable to export history"), export_error_label + "\n" + str(reason))
             return
 
@@ -2475,7 +2473,7 @@ class ElectrumWindow(QMainWindow):
 
     def settings_dialog(self):
         d = QDialog(self)
-        d.setWindowTitle(_('Electrum Settings'))
+        d.setWindowTitle(_('Vialectrum Settings'))
         d.setModal(1)
         vbox = QVBoxLayout()
         grid = QGridLayout()
@@ -2494,7 +2492,7 @@ class ElectrumWindow(QMainWindow):
         lang_label=QLabel(_('Language') + ':')
         grid.addWidget(lang_label, 1, 0)
         lang_combo = QComboBox()
-        from electrum_ltc.i18n import languages
+        from vialectrum.i18n import languages
         lang_combo.addItems(languages.values())
         try:
             index = languages.keys().index(self.config.get("language",''))
@@ -2518,7 +2516,7 @@ class ElectrumWindow(QMainWindow):
         if not self.config.is_modifiable('fee_per_kb'):
             for w in [fee_e, fee_label]: w.setEnabled(False)
 
-        units = ['LTC', 'mLTC', 'bits']
+        units = ['VIA', 'mVIA', 'bits']
         unit_label = QLabel(_('Base unit') + ':')
         grid.addWidget(unit_label, 3, 0)
         unit_combo = QComboBox()
@@ -2526,7 +2524,7 @@ class ElectrumWindow(QMainWindow):
         unit_combo.setCurrentIndex(units.index(self.base_unit()))
         grid.addWidget(unit_combo, 3, 1)
         grid.addWidget(HelpButton(_('Base unit of your wallet.')\
-                                             + '\n1LTC=1000mLTC.\n' \
+                                             + '\n1VIA=1000mVIA.\n' \
                                              + _(' These settings affects the fields in the Send tab')+' '), 3, 2)
 
         usechange_cb = QCheckBox(_('Use change addresses'))
@@ -2535,12 +2533,12 @@ class ElectrumWindow(QMainWindow):
         grid.addWidget(HelpButton(_('Using change addresses makes it more difficult for other people to track your transactions.')+' '), 4, 2)
         if not self.config.is_modifiable('use_change'): usechange_cb.setEnabled(False)
 
-        block_explorers = ['explorer.litecoin.net', 'block-explorer.com', 'Blockr.io']
+        block_explorers = ['explorer.viacoin.org', 'viacoinexplorer.com']
         block_ex_label = QLabel(_('Online Block Explorer') + ':')
         grid.addWidget(block_ex_label, 5, 0)
         block_ex_combo = QComboBox()
         block_ex_combo.addItems(block_explorers)
-        block_ex_combo.setCurrentIndex(block_explorers.index(self.config.get('block_explorer', 'explorer.litecoin.net')))
+        block_ex_combo.setCurrentIndex(block_explorers.index(self.config.get('block_explorer', 'explorer.viacoin.org')))
         grid.addWidget(block_ex_combo, 5, 1)
         grid.addWidget(HelpButton(_('Choose which online block explorer to use for functions that open a web browser')+' '), 5, 2)
 
@@ -2589,9 +2587,9 @@ class ElectrumWindow(QMainWindow):
 
         unit_result = units[unit_combo.currentIndex()]
         if self.base_unit() != unit_result:
-            if unit_result == 'LTC':
+            if unit_result == 'VIA':
                 self.decimal_point = 8
-            elif unit_result == 'mLTC':
+            elif unit_result == 'mVIA':
                 self.decimal_point = 5
             elif unit_result == 'bits':
                 self.decimal_point = 2
@@ -2614,7 +2612,7 @@ class ElectrumWindow(QMainWindow):
         run_hook('close_settings_dialog')
 
         if need_restart:
-            QMessageBox.warning(self, _('Success'), _('Please restart Electrum to activate the new GUI settings'), _('OK'))
+            QMessageBox.warning(self, _('Success'), _('Please restart Vialectrum to activate the new GUI settings'), _('OK'))
 
 
     def run_network_dialog(self):
@@ -2635,10 +2633,10 @@ class ElectrumWindow(QMainWindow):
 
 
     def plugins_dialog(self):
-        from electrum_ltc.plugins import plugins
+        from vialectrum.plugins import plugins
 
         d = QDialog(self)
-        d.setWindowTitle(_('Electrum Plugins'))
+        d.setWindowTitle(_('Vialectrum Plugins'))
         d.setModal(1)
 
         vbox = QVBoxLayout(d)

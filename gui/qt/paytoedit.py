@@ -22,7 +22,7 @@ from qrtextedit import QRTextEdit
 
 import re
 from decimal import Decimal
-from electrum_ltc import bitcoin
+from vialectrum import bitcoin
 
 RE_ADDRESS = '[1-9A-HJ-NP-Za-km-z]{26,}'
 RE_ALIAS = '(.*?)\s*\<([1-9A-HJ-NP-Za-km-z]{26,})\>'

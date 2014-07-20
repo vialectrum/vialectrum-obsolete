@@ -38,7 +38,7 @@ class Blockchain(threading.Thread):
         self.lock = threading.Lock()
         self.local_height = 0
         self.running = False
-        self.headers_url = 'http://headers.electrum-ltc.org/blockchain_headers'
+        self.headers_url = 'http://headers.vialectrum.org/blockchain_headers'
         self.set_local_height()
         self.queue = Queue.Queue()
 
@@ -257,7 +257,7 @@ class Blockchain(threading.Thread):
         max_target = 0x00000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         if index == 0: return 0x1e0ffff0, 0x00000FFFF0000000000000000000000000000000000000000000000000000000
 
-        # Litecoin: go back the full period unless it's the first retarget
+        # Viacoin: go back the full period unless it's the first retarget
         if index == 1:
             first = self.read_header(0)
         else:

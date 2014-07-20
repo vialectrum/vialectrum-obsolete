@@ -9,10 +9,10 @@ import threading
 import time
 import re
 from decimal import Decimal
-from electrum_ltc.plugins import BasePlugin
-from electrum_ltc.i18n import _
-from electrum_ltc_gui.qt.util import *
-from electrum_ltc_gui.qt.amountedit import AmountEdit
+from vialectrum.plugins import BasePlugin
+from vialectrum.i18n import _
+from vialectrum_gui.qt.util import *
+from vialectrum_gui.qt.amountedit import AmountEdit
 
 
 EXCHANGES = ["Bit2C",
@@ -104,7 +104,7 @@ class Exchanger(threading.Thread):
         quote_currencies = {"NIS": 0.0}
         for cur in quote_currencies:
             try:
-                quote_currencies[cur] = self.get_json('www.bit2c.co.il', "/Exchanges/LTC" + cur + "/Ticker.json")["ll"]
+                quote_currencies[cur] = self.get_json('www.bit2c.co.il', "/Exchanges/VIA" + cur + "/Ticker.json")["ll"]
             except Exception:
                 pass
         with self.lock:
@@ -118,8 +118,8 @@ class Exchanger(threading.Thread):
             return
         quote_currencies = {}
         try:
-            for r in jsonresp["LTC"]:
-                quote_currencies[r] = Decimal(jsonresp["LTC"][r])
+            for r in jsonresp["VIA"]:
+                quote_currencies[r] = Decimal(jsonresp["VIA"][r])
             with self.lock:
                 self.quote_currencies = quote_currencies
         except KeyError:
@@ -182,7 +182,7 @@ class Exchanger(threading.Thread):
         quote_currencies = {}
         try:
             for r in jsonresp["data"]:
-                if jsonresp["data"][r]["name"].startswith("LTC_"):
+                if jsonresp["data"][r]["name"].startswith("VIA_"):
                     quote_currencies[r[-3:]] = Decimal(jsonresp["data"][r]["last"])
             with self.lock:
                 self.quote_currencies = quote_currencies
@@ -197,8 +197,8 @@ class Exchanger(threading.Thread):
             return
         quote_currencies = {}
         try:
-            for r in jsonresp["prices"]["LTC"]:
-                quote_currencies[r] = Decimal(jsonresp["prices"]["LTC"][r])
+            for r in jsonresp["prices"]["VIA"]:
+                quote_currencies[r] = Decimal(jsonresp["prices"]["VIA"][r])
             with self.lock:
                 self.quote_currencies = quote_currencies
         except KeyError:
@@ -208,7 +208,7 @@ class Exchanger(threading.Thread):
     def update_kk(self):
         try:
             resp_currencies = self.get_json('api.kraken.com', "/0/public/AssetPairs")["result"]
-            pairs = ','.join([k for k in resp_currencies if k.startswith("XLTCZ")])
+            pairs = ','.join([k for k in resp_currencies if k.startswith("XVIAZ")])
             resp_rate = self.get_json('api.kraken.com', "/0/public/Ticker?pair=" + pairs)["result"]
         except Exception:
             return
@@ -238,7 +238,7 @@ class Exchanger(threading.Thread):
         quote_currencies = {"CAD": 0.0, "USD": 0.0}
         for cur in quote_currencies:
             try:
-                quote_currencies[cur] = self.get_json('api.vaultofsatoshi.com', "/public/ticker?order_currency=LTC&payment_currency=" + cur)["data"]["closing_price"]["value"]
+                quote_currencies[cur] = self.get_json('api.vaultofsatoshi.com', "/public/ticker?order_currency=VIA&payment_currency=" + cur)["data"]["closing_price"]["value"]
             except Exception:
                 pass
         with self.lock:
@@ -297,7 +297,7 @@ class Plugin(BasePlugin):
         self.get_fiat_price_text(r)
         quote = r.get(0)
         if quote:
-            price_text = "1 LTC~%s"%quote
+            price_text = "1 VIA~%s"%quote
             fiat_currency = quote[-3:]
             btc_price = self.btc_rate
             fiat_balance = Decimal(btc_price) * (Decimal(btc_balance)/100000000)
@@ -373,7 +373,7 @@ class Plugin(BasePlugin):
                 cur_currency = self.fiat_unit()
                 if cur_currency in ("ARS", "EUR", "USD", "VEF"):
                     try:
-                        resp_hist = self.exchanger.get_json('api.bitcoinvenezuela.com', "/historical/index.php?coin=LTC")[cur_currency + '_LTC']
+                        resp_hist = self.exchanger.get_json('api.bitcoinvenezuela.com', "/historical/index.php?coin=VIA")[cur_currency + '_VIA']
                     except Exception:
                         return
                 else:

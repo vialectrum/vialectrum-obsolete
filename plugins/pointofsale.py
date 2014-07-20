@@ -8,9 +8,9 @@ from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 
-from electrum_ltc_gui.qt.qrcodewidget import QRCodeWidget
-from electrum_ltc import BasePlugin
-from electrum_ltc.i18n import _
+from vialectrum_gui.qt.qrcodewidget import QRCodeWidget
+from vialectrum import BasePlugin
+from vialectrum.i18n import _
 
 
 if platform.system() == 'Windows':
@@ -27,7 +27,7 @@ class QR_Window(QWidget):
     def __init__(self, win):
         QWidget.__init__(self)
         self.win = win
-        self.setWindowTitle('Electrum - '+_('Invoice'))
+        self.setWindowTitle('Vialectrum - '+_('Invoice'))
         self.setMinimumSize(800, 250)
         self.address = ''
         self.label = ''

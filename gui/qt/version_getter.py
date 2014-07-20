@@ -22,8 +22,8 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import PyQt4.QtCore as QtCore
 
-from electrum_ltc.i18n import _
-from electrum_ltc import ELECTRUM_VERSION, print_error
+from vialectrum.i18n import _
+from vialectrum import ELECTRUM_VERSION, print_error
 
 class VersionGetter(threading.Thread):
 
@@ -33,7 +33,7 @@ class VersionGetter(threading.Thread):
         
     def run(self):
         try:
-            con = httplib.HTTPConnection('electrum-ltc.org', 80, timeout=5)
+            con = httplib.HTTPConnection('vialectrum.org', 80, timeout=5)
             con.request("GET", "/version")
             res = con.getresponse()
         except socket.error as msg:
@@ -90,16 +90,16 @@ class UpdateLabel(QLabel):
         self.dialog.done(0)
   
     def open_website(self):
-        webbrowser.open("http://electrum-ltc.org/")
+        webbrowser.open("http://vialectrum.org/")
         self.dialog.done(0)
 
     def mouseReleaseEvent(self, event):
         dialog = QDialog(self)
-        dialog.setWindowTitle(_('Electrum update'))
+        dialog.setWindowTitle(_('Vialectrum update'))
         dialog.setModal(1)
 
         main_layout = QGridLayout()
-        main_layout.addWidget(QLabel(_("A new version of Electrum is available:")+" " + self.latest_version), 0,0,1,3)
+        main_layout.addWidget(QLabel(_("A new version of Vialectrum is available:")+" " + self.latest_version), 0,0,1,3)
         
         ignore_version = QPushButton(_("Ignore this version"))
         ignore_version.clicked.connect(self.ignore_this_version)

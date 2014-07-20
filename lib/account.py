@@ -221,7 +221,7 @@ class OldAccount(Account):
         return [self.mpk.encode('hex')]
 
     def get_type(self):
-        return _('Old Electrum format')
+        return _('Old Vialectrum format')
 
     def get_xpubkeys(self, for_change, n):
         s = ''.join(map(lambda x: bitcoin.int_to_hex(x,2), (for_change, n)))

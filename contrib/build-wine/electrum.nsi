@@ -7,14 +7,14 @@
 ;General
 
   ;Name and file
-  Name "Electrum-LTC"
-  OutFile "dist/electrum-ltc-setup.exe"
+  Name "Vialectrum"
+  OutFile "dist/vialectrum-setup.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\Electrum-LTC"
+  InstallDir "$PROGRAMFILES\Vialectrum"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\Electrum-LTC" ""
+  InstallDirRegKey HKCU "Software\Vialectrum" ""
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
@@ -36,7 +36,7 @@
 
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
-  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Electrum-LTC"
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Vialectrum"
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 
   ;!insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
@@ -59,21 +59,21 @@ Section
   SetOutPath "$INSTDIR"
 
   ;ADD YOUR OWN FILES HERE...
-  file /r dist\electrum-ltc\*.*
+  file /r dist\vialectrum\*.*
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\Electrum-LTC" "" $INSTDIR
+  WriteRegStr HKCU "Software\Vialectrum" "" $INSTDIR
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
 
-  CreateShortCut "$DESKTOP\Electrum-LTC.lnk" "$INSTDIR\electrum-ltc.exe" ""
+  CreateShortCut "$DESKTOP\Vialectrum.lnk" "$INSTDIR\vialectrum.exe" ""
 
   ;create start-menu items
-  CreateDirectory "$SMPROGRAMS\Electrum-LTC"
-  CreateShortCut "$SMPROGRAMS\Electrum-LTC\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Electrum-LTC\Electrum-LTC.lnk" "$INSTDIR\electrum-ltc.exe" "" "$INSTDIR\electrum-ltc.exe" 0
+  CreateDirectory "$SMPROGRAMS\Vialectrum"
+  CreateShortCut "$SMPROGRAMS\Vialectrum\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
+  CreateShortCut "$SMPROGRAMS\Vialectrum\Vialectrum.lnk" "$INSTDIR\vialectrum.exe" "" "$INSTDIR\vialectrum.exe" 0
 
 SectionEnd
 
@@ -95,10 +95,10 @@ Section "Uninstall"
 
   RMDir "$INSTDIR"
 
-  Delete "$DESKTOP\Electrum-LTC.lnk"
-  Delete "$SMPROGRAMS\Electrum-LTC\*.*"
-  RmDir  "$SMPROGRAMS\Electrum-LTC"
+  Delete "$DESKTOP\Vialectrum.lnk"
+  Delete "$SMPROGRAMS\Vialectrum\*.*"
+  RmDir  "$SMPROGRAMS\Vialectrum"
 
-  DeleteRegKey /ifempty HKCU "Software\Electrum-LTC"
+  DeleteRegKey /ifempty HKCU "Software\Vialectrum"
 
 SectionEnd
