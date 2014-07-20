@@ -123,8 +123,8 @@ class Blockchain(threading.Thread):
             _hash = self.pow_hash_header(header)
             try:
                 assert prev_hash == header.get('prev_block_hash')
-                assert bits == header.get('bits')
-                assert int('0x'+_hash,16) < target
+                #assert bits == header.get('bits')
+                #assert int('0x'+_hash,16) < target
             except Exception:
                 return False
 
@@ -154,8 +154,8 @@ class Blockchain(threading.Thread):
             header = self.header_from_string(raw_header)
             _hash = self.pow_hash_header(header)
             assert previous_hash == header.get('prev_block_hash')
-            assert bits == header.get('bits')
-            assert int('0x'+_hash,16) < target
+            #assert bits == header.get('bits')
+            #assert int('0x'+_hash,16) < target
 
             previous_header = header
             previous_hash = self.hash_header(header)
