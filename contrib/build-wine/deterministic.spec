@@ -49,7 +49,7 @@ exe = EXE(pyz,
           debug=False,
           strip=None,
           upx=False,
-          icon='icons/electrum.ico',
+          icon='icons/vialectrum.ico',
           console=False)
           # The console True makes an annoying black box pop up, but it does make Electrum output command line commands, with this turned off no output will be given but commands can still be used
 
@@ -60,6 +60,6 @@ coll = COLLECT(exe,
                strip=None,
                upx=True,
                debug=False,
-               icon='icons/electrum.ico',
+               icon='icons/vialectrum.ico',
                console=False,
                name=os.path.join('dist', 'vialectrum'))
