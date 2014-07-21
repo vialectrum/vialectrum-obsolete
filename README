@@ -38,7 +38,7 @@ On Mac OS X:
   sudo python setup-release.py py2app
 
   # On brew installs
-  ARCHFLAGS="-arch i386 -arch x86_64" sudo python setup-release.py py2app --includes sip
+  ARCHFLAGS="-arch x86_64" sudo python setup-release.py py2app --includes sip
 
   sudo hdiutil create -fs HFS+ -volname "Vialectrum" -srcfolder dist/Vialectrum.app dist/vialectrum-VERSION-macosx.dmg
 
