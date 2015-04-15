@@ -378,7 +378,7 @@ class ElectrumWindow(QMainWindow):
 
     def show_report_bug(self):
         QMessageBox.information(self, "Vialectrum - " + _("Reporting Bugs"),
-            _("Please report any bugs as issues on github:")+" <a href=\"https://github.com/pooler/vialectrum/issues\">https://github.com/pooler/vialectrum/issues</a>")
+            _("Please report any bugs as issues on github:")+" <a href=\"https://github.com/vialectrum/vialectrum/issues\">https://github.com/vialectrum/vialectrum/issues</a>")
 
 
     def notify_transactions(self):
